@@ -2,9 +2,10 @@ require('dotenv').config();
 require('./config/database').connect();
 const express = require('express');
 const auth = require('./middleware/auth');
-const User = require('./model/user');
+// Routes
 const register = require('./routes/register');
 const login = require('./routes/login');
+const surveys = require('./routes/api/surveys');
 
 const app = express();
 
@@ -14,12 +15,10 @@ app.use(express.json());
 app.use('/register', register);
 
 // Login
-app.use('/login', login)
+app.use('/login', login);
 
-// Welcome
-app.get('/welcome', auth, (req, res) => {
-  res.status(200).send('Welcome');
-})
+// Surveys
+app.use('/api/surveys', auth, surveys)
 
 
 module.exports = app;

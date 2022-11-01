@@ -39,7 +39,7 @@
                     class="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                   >
                     <span class="sr-only">Open user menu</span>
-                    <img class="h-8 w-8 rounded-full" :src="user.imageUrl" alt="" />
+                    <img class="h-8 w-8 rounded-full" src="" alt="" />
                   </MenuButton>
                 </div>
                 <transition
@@ -98,7 +98,7 @@
         <div class="border-t border-gray-700 pt-4 pb-3">
           <div class="flex items-center px-5">
             <div class="flex-shrink-0">
-              <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt="" />
+              <img class="h-10 w-10 rounded-full" src="" alt="" />
             </div>
             <div class="ml-3">
               <div class="text-base font-medium leading-none text-white">
@@ -124,7 +124,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   Disclosure,
   DisclosureButton,
@@ -144,35 +144,17 @@ const navigation = [
   { name: "Surveys", to: { name: "Surveys" } },
 ];
 
-export default {
-  components: {
-    Disclosure,
-    DisclosureButton,
-    DisclosurePanel,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    Bars3Icon,
-    BellIcon,
-    XMarkIcon,
-  },
-  setup() {
-    const store = useStore();
-    const router = useRouter();
+const store = useStore();
+const router = useRouter();
 
-    function logout() {
-      store.commit("logout");
-      router.push({
-        name: "Login",
-      });
-    }
+function logout() {
+  store.commit("logout");
+  router.push({
+    name: "Login",
+  });
+}
 
-    return {
-      user: computed(() => store.state.user.data),
-      navigation,
-      logout,
-    };
-  },
-};
+const user = computed(() => {
+  return store.state.user.data;
+});
 </script>

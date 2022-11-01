@@ -4,6 +4,7 @@
       <h1 v-if="title" class="text-3xl font-bold tracking-tight text-gray-900">
         {{ title }}
       </h1>
+      <slot name="header"></slot>
     </div>
   </header>
   <main>

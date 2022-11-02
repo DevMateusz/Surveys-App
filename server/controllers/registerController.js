@@ -11,7 +11,7 @@ const handleNewUser = async (req, res) => {
       password_confirmation = req.body.password_confirmation;
 
     if(!(name && email && password && password_confirmation)) {
-      return res.status(400).json({"message": "All input is required"});
+      return res.status(400).json({"message": "all input is required"});
     }
 
     if(password !== password_confirmation){
@@ -21,14 +21,14 @@ const handleNewUser = async (req, res) => {
     const userExist = await User.findOne({ email });
 
     if(userExist) {
-      return res.status(409).json({"message": "User already exist"});
+      return res.status(409).json({"message": "user already exist"});
     }
 
     encryptedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
       name,
-      email: email,
+      email,
       password: encryptedPassword,
     });
     

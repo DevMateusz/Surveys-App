@@ -1,16 +1,14 @@
 const express = require('express');
-const Survey = require('../../model/survey');
-
 const router = express.Router();
+const surveysControler = require('../../controllers/surveysController');
 
-// router.get('/', (req, res) => {
-//   const surverys = Survey.fin
-// });
+router.route('/')
+  .get(surveysControler.getAllShowcaseSurveys)
+  .post(surveysControler.createNewSurvey)
+  .put(surveysControler.updateSurvey)
+  .delete(surveysControler.deleteSurvey);
 
-router.post('/', (req, res) => {
-  const {name, img} = req.body;
-  const {user_id} = req.user;
-  res.status(200).send(`${name} ${img} ${user_id}`);
-});
+router.route('/:id')
+  .get(surveysControler.getSurvey);
 
 module.exports = router;

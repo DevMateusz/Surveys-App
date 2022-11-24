@@ -1,17 +1,20 @@
 const mongoose = require('mongoose');
 const questionSchema = require('./Question');
+const answerSchema = require('./Answer');
 const slug = require('slug');
+const getDateWithTime = require('../helper/getDateWithTime');
 
 const surveySchema = new mongoose.Schema({
-  title: { type: String, require: true },
-  slug: { type: String, default: function() {return slug(this.title, "_")} },
-  status: { type: String },
+  title: { type: String },
+  slug: { type: String },
+  status: { type: Boolean },
   image: { type: String },
   description: { type: String },
-  created_at: { type: Date, immutable: true, default: () => Date.now() },
-  updated_at: { type: Date, default: () => Date.now() },
-  expire_at: { type: Date },
-  questions: [ questionSchema ]
+  created_at: { type: String, immutable: true, default: () => getDateWithTime()},
+  updated_at: { type: String, default: () => getDateWithTime()},
+  expire_at: { type: String },
+  questions: [ questionSchema ],
+  answers: [ answerSchema ]
 });
 
 surveySchema.methods.updateSlug = function() {
@@ -19,8 +22,12 @@ surveySchema.methods.updateSlug = function() {
 }
 
 surveySchema.methods.updateDate = function() {
-  this.updated_at = Date.now();
+  this.updated_at = getDateWithTime();
+}
+surveySchema.methods.deleteAnswers = function() {
+  const answerNumber = this.answers.length
+  this.answers = [];
+  return answerNumber;
 }
 
-// database automaticlly create colection taking name user and add s
 module.exports = surveySchema;

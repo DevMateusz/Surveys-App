@@ -11,17 +11,21 @@ const handleNewUser = async (req, res) => {
       password_confirmation = req.body.password_confirmation;
 
     if(!(name && email && password && password_confirmation)) {
-      return res.status(400).json({"message": "all input is required"});
+      return res.status(400).json({"message": "All input is required"});
+    }
+
+    if(!/(?=(.*[a-z]){1,})(?=(.*[A-Z]){1,})(?=(.*[0-9]){1,})(?=(.*[!@#$%^&*()\-_+.]){1,}).{8,}/g.test(password)) {
+      return res.status(422).json({"message": "Password is too weak"});
     }
 
     if(password !== password_confirmation){
-      return res.status(409).json({"message": "password are not the same"});
+      return res.status(422).json({"message": "Password are not the same"});
     }
 
     const userExist = await User.findOne({ email });
 
     if(userExist) {
-      return res.status(409).json({"message": "user already exist"});
+      return res.status(422).json({"message": "User already exists"});
     }
 
     encryptedPassword = await bcrypt.hash(password, 10);
@@ -38,7 +42,7 @@ const handleNewUser = async (req, res) => {
 
     res.status(201).json(newUser);
   } catch(err) {
-    console.log(err);
+    console.error(err);
   }
 }
 

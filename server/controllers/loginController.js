@@ -9,11 +9,14 @@ const loginUserToAccount = async(req, res) => {
       password = req.body.password;
     
     if(!(email && password)) {
-      return res.status(200).json({"message": "all input is required"});
+      return res.status(200).json({"message": "All input is required"});
     }
     
     let user = await User.findOne({ email }, { _id: 1, name: 1, email: 1, password: 1});
 
+    if(!user) {
+      return res.status(422).json({"message": "User does not exist"});
+    }
     if(user && (await bcrypt.compare(password, user.password))) {
       const token = jwt.sign({id: user._id, email}, process.env.TOKEN_KEY, {expiresIn: '2h'});
       
@@ -21,9 +24,9 @@ const loginUserToAccount = async(req, res) => {
 
       return res.status(200).json(user);
     };
-    return res.status(422).json({"message": "invalid credentials"});
+    return res.status(422).json({"message": "Invalid credentials"});
   } catch(err) {
-    return console.log(err);
+    return console.error(err);
   }
 }
 

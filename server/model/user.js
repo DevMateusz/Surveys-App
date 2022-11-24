@@ -9,5 +9,4 @@ const userSchema = new mongoose.Schema({
   surveys: [ surveySchema ]
 });
 
-// database automaticlly create colection taking name user and add s
 module.exports = mongoose.model('User', userSchema);

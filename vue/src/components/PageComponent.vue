@@ -1,7 +1,10 @@
 <template>
-  <header class="bg-white shadow">
+  <header class="bg-white shadow-md">
     <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
-      <h1 v-if="title" class="text-3xl font-bold tracking-tight text-gray-900">
+      <h1
+        v-if="title"
+        class="text-3xl font-bold tracking-tight text-gray-900 h-[40px] mb-0 flex items-center"
+      >
         {{ title }}
       </h1>
       <slot name="header"></slot>
@@ -9,9 +12,6 @@
   </header>
   <main>
     <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-      <!-- Replace with your content -->
-      <div class="px-4 py-6 sm:px-0"></div>
-      <!-- /End replace -->
       <slot></slot>
     </div>
   </main>

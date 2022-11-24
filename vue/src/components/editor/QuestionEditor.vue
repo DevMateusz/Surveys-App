@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center justify-between">
     <h3 class="text-lg font-bold">{{ index + 1 }}. {{ model.question }}</h3>
-    <div class="flex items-center">
+    <div class="flex items-center flex-col gap-2 sm:flex-row">
       <button
         type="button"
         @click="addQuestion()"
@@ -50,23 +50,24 @@
   <div class="grid gap-3 grid-cols-12">
     <div class="mt-3 col-span-9">
       <label
-        :for="'question_text_' + model.data"
+        :for="'question_text_' + model.id"
         class="block text-sm font-medium text-fray-700"
       >
         Question Text
       </label>
       <input
+        autocomplete="off"
         type="text"
-        :name="'question_text_' + model.data"
+        :name="'question_text_' + model.id"
         v-model="model.question"
         @change="dataChange"
-        :id="'question_text_' + model.data"
+        :id="'question_text_' + model.id"
         class="mt-1 p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border border-gray-300 rounded-md"
       />
     </div>
     <div class="mt-3 col-span-3">
       <label for="question_type" class="block text-sm font-medium text-gray-700"
-        >Select Question Type</label
+        >Type</label
       >
 
       <select
@@ -146,7 +147,7 @@
         <button
           type="button"
           @click="removeOption(option)"
-          class="h-6 w-6 rounded-fill flex items-center justify-center border border-transparent transition-colors hover:border-red-100"
+          class="h-6 w-6 rounded flex items-center justify-center border border-transparent transition-colors hover:text-red-500"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +173,6 @@
 
 <script setup>
 import { ref, computed } from "vue";
-import { v4 as uuidv4 } from "uuid";
 import store from "../../store";
 
 const props = defineProps({
@@ -203,7 +203,7 @@ function setOptions(options) {
 }
 
 function addOption() {
-  setOptions([...getOptions(), { uuid: uuidv4(), text: "" }]);
+  setOptions([...getOptions(), { text: "" }]);
   dataChange();
 }
 
@@ -224,7 +224,6 @@ function dataChange() {
   if (!shouldHaveOptions()) {
     delete data.data.options;
   }
-
   emit("change", data);
 }
 

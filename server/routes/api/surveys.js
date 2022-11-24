@@ -4,11 +4,12 @@ const surveysControler = require('../../controllers/surveysController');
 
 router.route('/')
   .get(surveysControler.getAllShowcaseSurveys)
-  .post(surveysControler.createNewSurvey)
-  .put(surveysControler.updateSurvey)
-  .delete(surveysControler.deleteSurvey);
+  .post(surveysControler.createNewSurvey);
+  
 
 router.route('/:id')
-  .get(surveysControler.getSurvey);
+  .get(surveysControler.getSurvey)
+  .put(surveysControler.updateSurvey)
+  .delete(surveysControler.deleteSurvey);
 
 module.exports = router;

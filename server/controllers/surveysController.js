@@ -1,124 +1,107 @@
-const sur = {
-  title: "New",
-  slug: "some-super-survey",
-  status: "draft",
-  image: "https://thumbs.dreamstime.com/b/businessman-icon-image-male-avatar-profile-vector-glasses-beard-hairstyle-179728610.jpg",
-  description: "My name is john cena. look at my super survay. Try win prize",
-  created_at: Date.now(),
-  updated_at: Date.now(),
-  expire_at: Date.now(),
-  questions: [
-    {
-      type: "select",
-      question: "From which country are you?",
-      description: null,
-      data: {
-        options: [
-          { text: "USA" },
-          { text: "Poland" },
-          { text: "Germany" },
-          { text: "India" },
-          { text: "What is country?" },
-        ]
-      },
-    },
-    {
-      type: "checkbox",
-      question: "Which language do you speak",
-      description: "something something something something something something something something something something ",
-      data: {
-        options: [
-          { text: "USA" },
-          { text: "Poland" },
-          { text: "Germany" },
-          { text: "India" },
-          { text: "What is country?" },
-        ]
-      },
-    },
-    {
-      type: "text",
-      question: "What is your favorite YouTube channel?",
-      description: null,
-      data: {},
-    },
-    {
-      type: "textarea",
-      question: "What do you think about this survey",
-      description: "Write something",
-      data: {},
-    },
-  ],
+const User =  require('../model/User');
+const fs = require('fs');
+const path = require('path');
+const slug = require('slug');
+
+function saveImage(baseImage) {
+  const localPath = path.join(__dirname, '..', 'public', 'images')
+  const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
+  const fileType = baseImage.substring("data:".length,baseImage.indexOf("/"));
+  const regex = new RegExp(`^data:${fileType}\/${ext};base64,`, 'gi');
+  const base64Data = baseImage.replace(regex, "");
+  const rand = Math.ceil(Math.random()*1000);
+  const filename = `img_${Date.now()}_${rand}.${ext}`;
+  const fileURL = `http://localhost:5000/api/images/${filename}`
+
+  if (!fs.existsSync(localPath)) {
+      fs.mkdirSync(localPath);
+  }
+  fs.writeFileSync(path.join(localPath, filename), base64Data, 'base64');
+  return fileURL;
 }
 
-
-
-
-
-
-const User =  require('../model/User');
+function deleteImage(imageURL) {
+  
+  const nameImage = imageURL.replace('http://localhost:5000/api/images/', '');
+  const imagePath = path.join(__dirname, '..', 'public', 'images', nameImage);
+  if (fs.existsSync(imagePath)) {
+      fs.unlinkSync(imagePath);
+  }
+  return;
+}
 
 const getAllShowcaseSurveys = async (req, res) => {
   const id = req.user.id;
-  console.log(`Current user is: ${id}`);
-  const surveys = (await User.findOne({ _id: id }).select('surveys._id surveys.title surveys.slug surveys.status surveys.image surveys.description surveys.created_at')).surveys;
+  const surveys = (await User.findOne({ _id: id }).select('surveys._id surveys.title surveys.slug surveys.status surveys.image surveys.description surveys.expire_at')).surveys;
   if(!surveys) return req.status(204).json({ "message": "no surveys found" });
-  res.status(200).json({ surveys })
+  res.status(200).json({ "data": surveys })
 }
 
 const createNewSurvey = async (req, res) => {
-  if(!req.body.surveyData) return res.status(400).json({ "message": "survey data not entered" });
+  if(!req.body) return res.status(400).json({ "message": "survey data not entered" });
+  if(req.body.image) {
+    req.body.image = saveImage(req.body.image)
+  }
+
   const id = req.user.id;
-  console.log(`Current user is: ${id}`);
   try {
     const user = await User.findOne({ _id: id });
-    await user.surveys.push(req.body.surveyData); // or { ..sur } to testing
+    req.body.slug = slug(req.body.title, "_");
+    await user.surveys.push(req.body);
     await user.save();
-    const newSurveyId = user.surveys.reverse().slice(0,1)[0]._id
-    res.status(200).json({ "id": newSurveyId })
+    const newSurvey = user.surveys.reverse().slice(0,1)[0]
+    res.status(200).json( newSurvey )
   } catch (err) {
     console.error(err.message);
   }
 }
 
 const updateSurvey = async (req, res) => {
-  if(!req.body.id) return res.status(400).json({ "message": "survey id is required" });
-  if(!req.body.surveyData) return res.status(400).json({ "message": "survey data is required" });
+  if(!req.params.id) return res.status(400).json({ "message": "survey id is required" });
+  if(!req.body) return res.status(400).json({ "message": "survey data is required" });
+
+
   const id = req.user.id;
-  console.log(`Current user is: ${id}`);
   try {
     const user = await User.findOne({ _id: id });
-    const survey = user.surveys.id(req.body.id);
-    await survey.set(req.body.surveyData);
+    const survey = user.surveys.id(req.params.id);
+    if(req.body.image?.includes("base64")) {
+      req.body.image = await saveImage(req.body.image)
+      if(survey.image) {
+        deleteImage(survey.image);
+      }
+    }
+    await survey.set(req.body);
     survey.updateSlug()
     survey.updateDate()
     await user.save();
-    res.status(200).json({ "message": "survey update successful" })
+    res.status(200).json( survey )
   } catch (err) {
     console.error(err.message)
   }
 }
 
 const deleteSurvey = async (req, res) => {
-  if(!req.body.id) return res.status(400).json({ "message": "survey id is required" });
+  if(!req.params.id) return res.status(400).json({ "message": "survey id is required" });
   const id = req.user.id;
-  console.log(`Current user is: ${id}`);
   const user = await User.findOne({ _id: id });
-
-  user.surveys.pull(req.body.id);
+  const survey = await user.surveys.id(req.params.id);
+  if(survey.image) {
+    deleteImage(survey.image);
+  }
+  await survey.remove();
   await user.save();
-  res.status(200).json({"message": `survey with id: ${req.body.id} has been removed`})
+  res.status(200).json({"message": `survey with id: ${req.params.id} has been removed`})
 }
 
 const getSurvey = async (req, res) => {
   if(!req.params.id) return res.status(400).json({ "message": "survey id is required" });
   const id = req.user.id;
-  console.log(`Current user is: ${id}`);
   const user = await User.findOne({ _id: id });
 
   const survey = user.surveys.id(req.params.id);
   if(!survey) return res.status(400).json({ "message": "survey not found" })
-  res.status(200).json({ survey })
+  res.status(200).json({ "data": survey })
 }
 
 module.exports = {

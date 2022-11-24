@@ -1,7 +1,8 @@
 <template>
   <router-view> </router-view>
+  <Notification />
 </template>
 
-<script setup></script>
-
-<style scoped></style>
+<script setup>
+import Notification from "./components/Notification.vue";
+</script>

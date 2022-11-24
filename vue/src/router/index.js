@@ -1,14 +1,22 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Dashboard from '../views/Dashboard.vue'
-import Login from '../views/Login.vue'
-import Register from '../views/Register.vue'
-import DefaultLayout from '../components/DefaultLayout.vue'
-import AuthLayout from '../components/AuthLayout.vue'
-import SurveyView from '../views/SurveyView.vue'
-import Surveys from '../views/Surveys.vue'
-import store from '../store'
+import { createRouter, createWebHistory } from 'vue-router';
+import Dashboard from '../views/Dashboard.vue';
+import Login from '../views/Login.vue';
+import Register from '../views/Register.vue';
+import SurveyPublicView from '../views/SurveyPublic.vue';
+import DefaultLayout from '../components/DefaultLayout.vue';
+import AuthLayout from '../components/AuthLayout.vue';
+import Survey from '../views/Survey.vue';
+import Surveys from '../views/Surveys.vue';
+import Answer from '../views/Answer.vue';
+import Answers from '../views/Answers.vue';
+import store from '../store';
 
 const routes = [
+  {
+    path: '/view/survey/:id/:slug',
+    name: 'SurveyPublic',
+    component: SurveyPublicView
+  },
   {
     path: '/',
     redirect: '/dashboard',
@@ -17,8 +25,10 @@ const routes = [
     children: [
       { path: '/dashboard', name: 'Dashboard', component: Dashboard },
       { path: '/surveys', name: 'Surveys', component: Surveys },
-      { path: '/surveys/create', name: 'SurveyCreate', component: SurveyView },
-      { path: '/surveys/:id', name: 'SurveyView', component: SurveyView },
+      { path: '/surveys/create', name: 'SurveyCreate', component: Survey },
+      { path: '/survey/:id?', name: 'Survey', component: Survey },
+      { path: '/answers/:query?', name: 'Answers', component: Answers },
+      { path: '/answer/:sid?/:aid?', name: 'Answer', component: Answer },
     ]
   },
   {
@@ -40,7 +50,13 @@ const routes = [
       },
     ]
   },
-  
+  { 
+    path: '/:pathMatch(.*)*',
+    redirect: '/login',
+    name: 'NotFound',
+    component: Login,
+    meta: { isGuest: true }
+  },
 ]
 
 const router = createRouter({

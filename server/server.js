@@ -15,10 +15,12 @@ const PORT = process.env.PORT || 5000;
 connectDB();
 
 app.use(logger);
-
 app.use(cors(corsOptions));
+app.use(express.json({limit: '2mb'}));
+app.use(express.urlencoded({limit: '2mb',extended: true}));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
 
 // server static files
 app.use('/', express.static(path.join(__dirname, '/public')))
@@ -26,7 +28,11 @@ app.use('/', express.static(path.join(__dirname, '/public')))
 // routes
 app.use('/register', require('./routes/register'));
 app.use('/login', require('./routes/login'));
+app.use('/api/answers', auth, require('./routes/api/answers'));
 app.use('/api/surveys', auth, require('./routes/api/surveys'));
+app.use('/api/dashboard', auth, require('./routes/api/dashboard'));
+app.use('/api/guest_survey', require('./routes/api/publicSurveys'));
+app.use('/api/images', express.static(path.join(__dirname, 'public', 'images')));
 
 app.all('*', (req ,res) => {
     res.status(404);

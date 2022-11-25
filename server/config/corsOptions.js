@@ -1,7 +1,7 @@
 const corsWhiteList = [
   process.env.CLIENT_BASE_URL
 ];
-console.log(corsWhiteList);
+
 const corsOptions = {
     origin: (origin, callback) => {
         if(corsWhiteList.indexOf(origin) !== -1 || !origin) {

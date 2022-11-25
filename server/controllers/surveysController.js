@@ -14,7 +14,7 @@ function saveImage(baseImage) {
   const fileURL = `${process.env.API_BASE_URL}/api/images/${filename}`
 
   if (!fs.existsSync(localPath)) {
-      fs.mkdirSync(localPath);
+    fs.mkdirSync(localPath, {recursive: true}, err =>{});
   }
   fs.writeFileSync(path.join(localPath, filename), base64Data, 'base64');
   return fileURL;

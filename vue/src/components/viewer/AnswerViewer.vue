@@ -1,7 +1,7 @@
 <template>
   <fieldset class="mb-4">
     <DefaultViewer :index="index" :question="question" />
-    <h1 class="mt-3 text-green-600 font-bold">
+    <h1 class="mt-3 text-indigo-500 font-bold">
       <div v-if="Array.isArray(question.answer)" v-for="ans in question.answer">
         <div>{{ ans }}</div>
       </div>

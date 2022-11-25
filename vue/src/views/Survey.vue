@@ -297,10 +297,12 @@ function deleteSurvey() {
     confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
-      router.go(-1);
-      store.commit("notify", {
-        type: "success",
-        message: "Survey has been successfully removed",
+      store.dispatch("deleteSurvey", survey.id).then(() => {
+        router.go(-1);
+        store.commit("notify", {
+          type: "success",
+          message: "Survey has been successfully removed",
+        });
       });
     }
   });

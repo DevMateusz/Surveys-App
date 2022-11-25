@@ -1,8 +1,8 @@
 {
-  "name": "serverv2",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "logEvents.js",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js"

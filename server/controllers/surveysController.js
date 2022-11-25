@@ -11,7 +11,7 @@ function saveImage(baseImage) {
   const base64Data = baseImage.replace(regex, "");
   const rand = Math.ceil(Math.random()*1000);
   const filename = `img_${Date.now()}_${rand}.${ext}`;
-  const fileURL = `http://localhost:5000/api/images/${filename}`
+  const fileURL = `${process.env.API_BASE_URL}/api/images/${filename}`
 
   if (!fs.existsSync(localPath)) {
       fs.mkdirSync(localPath);
@@ -22,7 +22,7 @@ function saveImage(baseImage) {
 
 function deleteImage(imageURL) {
   
-  const nameImage = imageURL.replace('http://localhost:5000/api/images/', '');
+  const nameImage = imageURL.replace(`${process.env.API_BASE_URL}/api/images/`, '');
   const imagePath = path.join(__dirname, '..', 'public', 'images', nameImage);
   if (fs.existsSync(imagePath)) {
       fs.unlinkSync(imagePath);

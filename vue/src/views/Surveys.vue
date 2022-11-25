@@ -65,7 +65,6 @@ function deleteSurvey(survey) {
     if (result.isConfirmed) {
       store.dispatch("deleteSurvey", survey.id).then(() => {
         store.dispatch("getSurveys");
-
         store.commit("notify", {
           type: "success",
           message: "Survey has been successfully removed",

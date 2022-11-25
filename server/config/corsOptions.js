@@ -1,7 +1,7 @@
 const corsWhiteList = [
-  'http://localhost:5173'
+  process.env.CLIENT_BASE_URL
 ];
-
+console.log(corsWhiteList);
 const corsOptions = {
     origin: (origin, callback) => {
         if(corsWhiteList.indexOf(origin) !== -1 || !origin) {

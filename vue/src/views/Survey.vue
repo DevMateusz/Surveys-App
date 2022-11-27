@@ -297,7 +297,7 @@ function deleteSurvey() {
     confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
-      store.dispatch("deleteSurvey", survey.id).then(() => {
+      store.dispatch("deleteSurvey", route.params.id).then(() => {
         router.go(-1);
         store.commit("notify", {
           type: "success",

@@ -12,10 +12,12 @@ An application for creating surveys, sharing and reading responses. It has a use
 
 
 ## Interface showcase
-Whole application
+**Whole application**
+
 ![Whole application](https://raw.githubusercontent.com/DevMateusz/Surveys-App/main/showcase.gif)
 
-Creation of a survey
+**Creation of a survey**
+
 ![Creation of a survey](https://raw.githubusercontent.com/DevMateusz/Surveys-App/main/createSurvey.gif)
 
 

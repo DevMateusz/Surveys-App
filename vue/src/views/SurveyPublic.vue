@@ -1,5 +1,5 @@
 <template>
-  <div class="py-5 px-8">
+  <div class="p-2 sm:py-5 sm:px-8">
     <div v-if="loading" class="flex justify-center">Loading...</div>
     <div
       v-if="surveyUnavailable"
@@ -23,7 +23,7 @@
       </div>
       <div
         v-if="surveyFinished"
-        class="py-8 px-6 bg-emerald-400 text-white w-[600px] mx-auto mt-10"
+        class="py-8 px-6 bg-emerald-400 text-white w-full sm:w-[600px] mx-auto mt-10"
       >
         <div class="text-xl mb-3 font-semibold">
           Thank you for participating in this survey.
